@@ -196,6 +196,158 @@ int main(){
     return 0;
 
 }
+                                          // or by - perpl.
+#include <iostream>
+using namespace std;
+
+// Node definition
+struct Node {
+    int data;
+    Node* next;
+};
+
+// Singly Linked List ADT
+class SinglyLinkedList {
+public:
+    Node* head;
+
+    SinglyLinkedList() {
+        head = nullptr;
+    }
+
+    // i. Insert at beginning
+    void insertAtBeginning(int val) {
+        Node* newnode = new Node();
+        newnode->data = val;
+        newnode->next = head;
+        head = newnode;
+    }
+
+    // ii. Insert at i-th position (1-based: pos = 1 means beginning)
+    void insertAtPosition(int val, int pos) {
+        if (pos <= 1 || head == nullptr) {
+            insertAtBeginning(val);
+            return;
+        }
+
+        Node* newnode = new Node();
+        newnode->data = val;
+
+        Node* temp = head;
+        for (int i = 1; temp != nullptr && i < pos - 1; i++) {
+            temp = temp->next;
+        }
+
+        // If pos is greater than length+1, insert at end
+        if (temp == nullptr) {
+            temp = head;
+            while (temp->next != nullptr) temp = temp->next;
+            temp->next = newnode;
+            newnode->next = nullptr;
+        } else {
+            newnode->next = temp->next;
+            temp->next = newnode;
+        }
+    }
+
+    // iv. Remove element from i-th position (1-based)
+    void removeAtPosition(int pos) {
+        if (head == nullptr || pos < 1) {
+            cout << "List is empty or invalid position\n";
+            return;
+        }
+
+        // delete head
+        if (pos == 1) {
+            Node* del = head;
+            head = head->next;
+            delete del;
+            return;
+        }
+
+        Node* temp = head;
+        for (int i = 1; temp != nullptr && i < pos - 1; i++) {
+            temp = temp->next;
+        }
+
+        // position out of range
+        if (temp == nullptr || temp->next == nullptr) {
+            cout << "Position out of range\n";
+            return;
+        }
+
+        Node* del = temp->next;
+        temp->next = del->next;
+        delete del;
+    }
+
+    // v. Search for element x and return its pointer
+    Node* search(int x) {
+        Node* temp = head;
+        while (temp != nullptr) {
+            if (temp->data == x) return temp;
+            temp = temp->next;
+        }
+        return nullptr;
+    }
+
+    // Print list
+    void printList() {
+        Node* temp = head;
+        while (temp != nullptr) {
+            cout << temp->data << " ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+
+    // Reverse entire list (optional)
+    void reverseLL() {
+        Node* prev = nullptr;
+        Node* curr = head;
+        while (curr != nullptr) {
+            Node* next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
+        }
+        head = prev;
+    }
+};
+
+int main() {
+    SinglyLinkedList list;
+
+    // Insert at beginning
+    list.insertAtBeginning(40);
+    list.insertAtBeginning(30);
+    list.insertAtBeginning(20);
+    list.insertAtBeginning(10);   // list: 10 20 30 40
+    list.printList();
+
+    // Insert at i-th position
+    list.insertAtPosition(25, 3); // list: 10 20 25 30 40
+    list.printList();
+
+    // Remove from i-th position
+    list.removeAtPosition(4);     // remove 30 -> list: 10 20 25 40
+    list.printList();
+
+    // Search
+    int x = 25;
+    Node* found = list.search(x);
+    if (found)
+        cout << "Found " << x << " at node address " << found << endl;
+    else
+        cout << x << " not found\n";
+
+    // Reverse (optional)
+    list.reverseLL();
+    list.printList();
+
+    return 0;
+}
+
 
 /*double-lined-list - 2 - Write a program to implement doubly linked list as an ADT that supports the following op rations: ii.
 (i)insert an element x at the beginning of the doubly linked list
