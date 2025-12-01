@@ -1,6 +1,11 @@
 # ds-practical
 
-// single-linked-list 
+/*single-linked-list -1 - Write a program to implement singly linked list as an ADT that supports the following oper ations:
+i. Insert an element x at the beginning of the singly linked list
+ii. Insert an element x at i th position in the singly linked list
+iii. Remove an element from the beginning of the doubly linked list
+iv. Remove an element from i th position in the singly linked list.
+v. Search for an element x in the singly linked list and return its pointer.*/
 
 #include<iostream>
 using namespace  std;
@@ -192,100 +197,106 @@ int main(){
 
 }
 
-// double-lined-list 
+/*double-lined-list - 2 - Write a program to implement doubly linked list as an ADT that supports the following op rations: ii.
+(i)insert an element x at the beginning of the doubly linked list
+(ii) Insert an element x at the end of the doubly linked list
+(iii)Remove an element from the beginning of the doubly linked list
+(iv)Remove an element from the end of the doubly linked list.*/
+
 #include <iostream>
 using namespace std;
 
-struct Node{
+struct Node {
     int data;
-    Node*next;
-    Node*prev;
+    Node* next;
+    Node* prev;
 };
 
-
-class DoublyLL{
+class DoublyLL {
 public:
-    Node*head;
+    Node* head;
 
-    DoublyLL(){
+    DoublyLL() {
         head = NULL;
     }
 
-    Node* push_front(int val){
+    Node* push_front(int val) {
         Node* newnode = new Node();
         newnode->data = val;
-        if(head==NULL){
-            head = newnode;
-            
+        newnode->prev = NULL;
+        newnode->next = head;
+
+        if (head != NULL) {
+            head->prev = newnode;
         }
-        else{
-            newnode->next = head;
-            head->prev  =newnode;
-            head = newnode;
-        }
+
+        head = newnode;
+        return head;          // <<< added
     }
 
-    void pop_front(){
-        if(head==NULL){
-            cout<<"DLL is empty"<<endl;
-        }
-        Node*temp = head;
-        head= head->next;
-        if(head !=NULL){
-            head->prev =NULL;
-        }
-        temp->next = NULL;
-        delete(temp);
-    }
-    
-    void push_back(int val){
-        Node*temp = head;
-        Node * newnode = new Node();
-        newnode->data = val;
-        if(head==NULL){
-            head  = newnode;
-        }
-        else{
-            
-            while(temp->next!=NULL){
-                temp = temp->next;
-            }
-            newnode->prev = temp;
-            temp->next = newnode;
-            
-        }
-        
-    }
-
-    void pop_back(){
-        Node*temp = head;
-        if(head==NULL){
-            cout<<"DLL is empty";
+    void pop_front() {
+        if (head == NULL) {
+            cout << "DLL is empty" << endl;
             return;
         }
-        while(temp->next->next!=NULL){
-            temp = temp->next;
+        Node* temp = head;
+        head = head->next;
+        if (head != NULL) {
+            head->prev = NULL;
         }
-        if(head->next !=NULL){
-            Node* temp2 = temp->next;
-            temp->next = NULL;
-            temp2->prev = NULL;
-            delete(temp2);
-        }
-        
+        delete temp;
     }
 
-    void printDLL(){
-        Node*temp  = head;
-        while(temp !=NULL){
-            cout<<temp->data<<" ";
+    void push_back(int val) {
+        Node* newnode = new Node();
+        newnode->data = val;
+        newnode->next = NULL;
+        newnode->prev = NULL;
+
+        if (head == NULL) {
+            head = newnode;
+            return;
+        }
+
+        Node* temp = head;
+        while (temp->next != NULL) {
             temp = temp->next;
         }
-        cout<<endl;
+        newnode->prev = temp;
+        temp->next = newnode;
+    }
+
+    void pop_back() {
+        if (head == NULL) {
+            cout << "DLL is empty" << endl;
+            return;
+        }
+        if (head->next == NULL) {      // only one node
+            delete head;
+            head = NULL;
+            return;
+        }
+
+        Node* temp = head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        // temp is last node
+        temp->prev->next = NULL;
+        delete temp;
+    }
+
+    void printDLL() {
+        Node* temp = head;
+        while (temp != NULL) {
+            cout << temp->data << " ";
+            temp = temp->next;
+        }
+        cout << endl;
     }
 };
 
-int main(){
+int main() {
     DoublyLL DLL;
 
     DLL.push_front(1);
@@ -295,135 +306,147 @@ int main(){
     //DLL.pop_front();
     DLL.pop_back();
 
-    DLL.printDLL();
+    DLL.printDLL();   // expected: 3 2 1
+    return 0;
 }
 
-// circular-lined-list
+
+/*circular-lined-list - 3 - Write a program to implement circular linked list as an ADT which supports the following
+operations: i. ii. iii. Insert an element x in the list , Remove an element from the list,  Search for an
+element x in the list and return its pointer.*/
 
 #include <iostream>
 using namespace std;
 
-struct Node{
+struct Node {
     int data;
-    Node*next;
-    
+    Node* next;
 };
 
-
-class CircularLL{
+class CircularLL {
 public:
-    Node*head;
-    Node*  tail;
+    Node* head;
+    Node* tail;
 
-    CircularLL(){
-        head = tail= NULL;
+    CircularLL() {
+        head = tail = NULL;
     }
 
-    Node* push_front(int val){
+    // no need to return Node*
+    void push_front(int val) {
         Node* newnode = new Node();
         newnode->data = val;
-        if(head==NULL){
-            head =tail = newnode;
-            
-        }
-        else{
+        if (head == NULL) {
+            head = tail = newnode;
+            tail->next = head;
+        } else {
             newnode->next = head;
             head = newnode;
             tail->next = head;
-        
         }
     }
 
-    void pop_front(){
-        if(head==NULL){
-            cout<<"CLL is empty"<<endl;
+    void pop_front() {
+        if (head == NULL) {
+            cout << "CLL is empty" << endl;
+            return;
         }
-        Node*temp = head;
-        
-        if(head ==tail){
-            delete(head);
-            head = NULL;
-            tail=NULL;
-           return;
+        if (head == tail) {
+            delete head;
+            head = tail = NULL;
+            return;
         }
-        head= head->next;
+        Node* temp = head;
+        head = head->next;
         tail->next = head;
-        temp->next = NULL;
-        delete(temp);
+        delete temp;
     }
-    
-    void push_back(int val){
-        Node*temp = head;
-        Node * newnode = new Node();
+
+    void push_back(int val) {
+        Node* newnode = new Node();
         newnode->data = val;
-        if(head==NULL){
-            head  =tail = newnode;
-        }
-        else{
+        if (head == NULL) {
+            head = tail = newnode;
+            tail->next = head;
+        } else {
             tail->next = newnode;
             tail = newnode;
             tail->next = head;
         }
-        
     }
 
-    void pop_back(){
-        Node*temp = tail;
-        if(head==NULL){
-            cout<<"CLL is empty";
+    void pop_back() {
+        if (head == NULL) {
+            cout << "CLL is empty" << endl;
             return;
         }
-        if(head==tail){
-            delete(head);
-            head=tail= NULL;
+        if (head == tail) {
+            delete head;
+            head = tail = NULL;
             return;
         }
-        Node*prev = head;
-        while(prev->next!=tail){
+        Node* prev = head;
+        while (prev->next != tail) {
             prev = prev->next;
         }
+        Node* temp = tail;
         tail = prev;
         tail->next = head;
-        temp->next = NULL;
-        delete(temp);
+        delete temp;
     }
 
-    Node* findAtspecificpos(int x){
-        Node*temp = head;
-        while(temp->data!=x){
-            temp= temp->next;
+    // return pointer to node with data == x, or NULL if not found
+    Node* findAtspecificpos(int x) {
+        if (head == NULL) return NULL;
+
+        Node* temp = head;
+        do {
+            if (temp->data == x) {
+                return temp;
+            }
+            temp = temp->next;
+        } while (temp != head);
+
+        return NULL;
+    }
+
+    void printDLL() {
+        if (head == NULL) {
+            cout << "CLL is empty" << endl;
+            return;
         }
-        cout<< temp;
-    }
-
-    void printDLL(){
-        Node*temp  = head;
-        cout<<temp->data<<" ";
+        Node* temp = head;
+        cout << temp->data << " ";
         temp = temp->next;
-        while(temp !=head){
-            cout<<temp->data<<" ";
+        while (temp != head) {
+            cout << temp->data << " ";
             temp = temp->next;
         }
-        cout<<temp->data;
-        cout<<endl;
+        cout << endl;
     }
-
 };
 
-int main(){
-   CircularLL CLL;
+int main() {
+    CircularLL CLL;
 
     CLL.push_front(1);
     CLL.push_front(2);
     CLL.push_front(3);
     CLL.push_back(4);
-    //CLL.pop_front();
-    //CLL.pop_back();
-    CLL.printDLL();
-     CLL.findAtspecificpos(2);
+
+    CLL.printDLL();           // 3 2 1 4
+
+    Node* found = CLL.findAtspecificpos(2);
+    if (found != NULL) {
+        cout << "Found node with data: " << found->data << endl;
+    } else {
+        cout << "Value not found\n";
+    }
+
+    return 0;
 }
 
-//stack 
+/*stack -4- Implement Stack as an ADT and use it to evaluate a prefix/postfix expression.*/
 
 #include <iostream>
 #include <string>
@@ -542,7 +565,7 @@ int main() {
     return 0;
 }
 
-// queue
+/*queue - Implement Queue as an ADT.*/
 
 #include <iostream>
 using namespace std;
@@ -617,7 +640,12 @@ int main() {
     return 0;
 }
 
-// BST 
+/* BST - 6 - Write a program to implement Binary Search Tree as an ADT which supports the following
+operations: i. Insert an element x
+ (ii)Delete an element x
+(iii)Search for an element x in the BST
+(iv)Display the elements of the BST in preorder, inorder, and postorder traversal.*/ 
+
 #include<iostream>
 #include<vector>
 using namespace std;
@@ -729,7 +757,9 @@ int main(){
 
    cout<< Search(root,7);
 }
-// AVL 
+
+/* AVL-7 - Write a program to implement insert and search operation in AVL trees.*/ 
+    
 #include<iostream>
 #include<algorithm>
 #include<vector>
@@ -849,4 +879,144 @@ int main(){
     root = insert(root, 50);
     root = insert(root, 25);
     inOrder(root);
+}
+
+                                         // or - by perpl.
+
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int key;
+    Node* left;
+    Node* right;
+    int height;
+    Node(int k) : key(k), left(nullptr), right(nullptr), height(1) {}
+};
+
+// height of a node
+int height(Node* n) {
+    return n ? n->height : 0;
+}
+
+// balance factor
+int getBalance(Node* n) {
+    return n ? height(n->left) - height(n->right) : 0;
+}
+
+// right rotation (LL case)
+Node* rightRotate(Node* y) {
+    Node* x  = y->left;
+    Node* T2 = x->right;
+
+    // perform rotation
+    x->right = y;
+    y->left  = T2;
+
+    // update heights
+    y->height = 1 + max(height(y->left), height(y->right));
+    x->height = 1 + max(height(x->left), height(x->right));
+
+    return x;   // new root
+}
+
+// left rotation (RR case)
+Node* leftRotate(Node* x) {
+    Node* y  = x->right;
+    Node* T2 = y->left;
+
+    // perform rotation
+    y->left  = x;
+    x->right = T2;
+
+    // update heights
+    x->height = 1 + max(height(x->left), height(x->right));
+    y->height = 1 + max(height(y->left), height(y->right));
+
+    return y;   // new root
+}
+
+// AVL insert
+Node* insert(Node* node, int key) {
+    // 1. Normal BST insert
+    if (node == nullptr)
+        return new Node(key);
+
+    if (key < node->key)
+        node->left  = insert(node->left, key);
+    else if (key > node->key)
+        node->right = insert(node->right, key);
+    else
+        return node;      // no duplicates
+
+    // 2. Update height
+    node->height = 1 + max(height(node->left), height(node->right));
+
+    // 3. Get balance factor
+    int balance = getBalance(node);
+
+    // 4. Balance the node (4 cases)
+
+    // Left Left
+    if (balance > 1 && key < node->left->key)
+        return rightRotate(node);
+
+    // Right Right
+    if (balance < -1 && key > node->right->key)
+        return leftRotate(node);
+
+    // Left Right
+    if (balance > 1 && key > node->left->key) {
+        node->left = leftRotate(node->left);
+        return rightRotate(node);
+    }
+
+    // Right Left
+    if (balance < -1 && key < node->right->key) {
+        node->right = rightRotate(node->right);
+        return leftRotate(node);
+    }
+
+    // already balanced
+    return node;
+}
+
+// AVL/BST search
+Node* search(Node* root, int key) {
+    if (root == nullptr || root->key == key)
+        return root;
+    if (key < root->key)
+        return search(root->left, key);
+    else
+        return search(root->right, key);
+}
+
+// inorder traversal (for checking)
+void inorder(Node* root) {
+    if (!root) return;
+    inorder(root->left);
+    cout << root->key << " ";
+    inorder(root->right);
+}
+
+int main() {
+    Node* root = nullptr;
+
+    // insert elements
+    int arr[] = {10, 20, 30, 40, 50, 25};
+    for (int x : arr)
+        root = insert(root, x);
+
+    cout << "Inorder (sorted) AVL: ";
+    inorder(root);
+    cout << endl;
+
+    int x = 25;
+    Node* found = search(root, x);
+    if (found)
+        cout << x << " found in tree\n";
+    else
+        cout << x << " not found\n";
+
+    return 0;
 }
